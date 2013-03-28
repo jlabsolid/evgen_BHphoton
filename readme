@@ -1,0 +1,27 @@
+== info ==
+
+this directory contains the event geenrator for Timelike Compton Scattering (TCS) in electroproduction
+It is actaully a event generator for Bethe_Heitler process which used for TCS estimation
+
+The photonproduction of BH crossection is based on formula Eur.Phys.J.C23:675-689,2002
+Then virtual photon flux is calculated by equivalent photon approximation (EPA) by using formula 3 of
+http://lss.fnal.gov/archive/other/lpc-94-35.pdf 
+
+events are generated eveenly within available Eg, Q2 and t phase space. the phase space factors is in output
+
+== code ==
+
+main generator code is GenTCS.cc which calls other code as lib
+
+To comile
+setup root env
+make GenTCS.exe
+setenv LD_LIBRARY_PATH ./:${LD_LIBRARY_PATH}
+./GenTCS.exe Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) Nsim
+
+choose Ep as 0 for fixed target (jlab 12GeV) or non-0 for collider (EIC)
+
+The output tree is in GenTCS.root
+
+anaTCS.C can be used to analyze the output tree
+
