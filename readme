@@ -13,9 +13,9 @@ events are generated eveenly within available Eg, Q2 and t phase space. the phas
 
 main generator code is GenTCS.cc which calls other code as lib
 
-To comile
+To compile
 setup root env
-make GenTCS.exe
+make
 setenv LD_LIBRARY_PATH ./:${LD_LIBRARY_PATH}
 ./GenTCS.exe Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) Nsim
 
@@ -24,4 +24,11 @@ choose Ep as 0 for fixed target (jlab 12GeV) or non-0 for collider (EIC)
 The output tree is in GenTCS.root
 
 anaTCS.C can be used to analyze the output tree
+As script, it's too slow.
+compile it first, then run
+in root
+.L anaTCS.C+
+anaTCS("GenTCS.root","SoLID")
+
+
 

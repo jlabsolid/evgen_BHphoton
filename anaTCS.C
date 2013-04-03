@@ -1,7 +1,7 @@
-#include <iostream>
 // #include <sys/time.h>
 // #include <sys/resource.h>
-#include <vector>
+// #include <vector>
+#include <iostream>
 #include <TMath.h> 
 #include <TCanvas.h>
 #include <TFile.h>
@@ -293,7 +293,7 @@ TH1F *hQ2_final=new TH1F("Q2_final","Q2_final",70,3,10);
 TH2F *heta_t_final=new TH2F("eta_t_final","eta_t_final",50,etamin,etamax,50,tmin,tmax);
 TH2F *heta_Q2_final=new TH2F("eta_Q2_final","eta_Q2_final",50,etamin,etamax,70,3,10);
 TH2F *ht_Q2_final=new TH2F("t_Q2_final","t_Q2_final",50,tmin,tmax,70,3,10);
-// TH3F *heta_t_Q2_final=new TH3F("eta_t_Q2_final","eta_t_Q2_final",50,etamin,etamax,50,tmin,tmax,70,3,10);
+TH3F *heta_t_Q2_final=new TH3F("eta_t_Q2_final","eta_t_Q2_final",50,etamin,etamax,50,tmin,tmax,70,3,10);
 
 TH1F *ht_final_bin=new TH1F("t_final_bin","t_final_bin",Ntbin,tbin_edge);
 TH1F *heta_final_bin=new TH1F("eta_final_bin","eta_final_bin",Netabin,etabin_edge);
@@ -301,7 +301,7 @@ TH1F *hQ2_final_bin=new TH1F("Q2_final_bin","Q2_final_bin",NQ2bin,Q2bin_edge);
 TH2F *heta_t_final_bin=new TH2F("eta_t_final_bin","eta_t_final_bin",Netabin,etabin_edge,Ntbin,tbin_edge);
 TH2F *heta_Q2_final_bin=new TH2F("eta_Q2_final_bin","eta_Q2_final_bin",Netabin,etabin_edge,NQ2bin,Q2bin_edge);
 TH2F *ht_Q2_final_bin=new TH2F("t_Q2_final_bin","t_Q2_final_bin",Ntbin,tbin_edge,NQ2bin,Q2bin_edge);
-// TH3F *heta_t_Q2_final_bin=new TH3F("eta_t_Q2_final_bin","eta_t_Q2_final_bin",Netabin,etabin_edge,Ntbin,tbin_edge,Ntbin,tbin_edge);
+TH3F *heta_t_Q2_final_bin=new TH3F("eta_t_Q2_final_bin","eta_t_Q2_final_bin",Netabin,etabin_edge,Ntbin,tbin_edge,Ntbin,tbin_edge);
 
 TH2F *hgen_t_Q2[20];
 TH2F *hgen_theta_phi_CM[20];
@@ -327,16 +327,26 @@ else cout << "open file " << input_filename << endl;
 TTree *Ttr1 = (TTree*) file->Get("tr1");
 
 Double_t Q2,t_t,psf,psf_flux,crs_BH,flux_factor;
-TLorentzVector *L_em,*L_ep,*L_prot;
+Double_t em_px,em_py,em_pz,ep_px,ep_py,ep_pz,prot_px,prot_py,prot_pz;
+// TLorentzVector *L_em,*L_ep,*L_prot;
 Ttr1->SetBranchAddress("Q2",&Q2);
 Ttr1->SetBranchAddress("t",&t_t);
 Ttr1->SetBranchAddress("psf",&psf);
 Ttr1->SetBranchAddress("psf_flux",&psf_flux);
 Ttr1->SetBranchAddress("crs_BH",&crs_BH);
 Ttr1->SetBranchAddress("flux_factor",&flux_factor);
-Ttr1->SetBranchAddress("L_em",&L_em);
-Ttr1->SetBranchAddress("L_ep",&L_ep);
-Ttr1->SetBranchAddress("L_prot",&L_prot);
+// Ttr1->SetBranchAddress("L_em",&L_em);
+// Ttr1->SetBranchAddress("L_ep",&L_ep);
+// Ttr1->SetBranchAddress("L_prot",&L_prot);
+Ttr1->SetBranchAddress("em_px",&em_px);
+Ttr1->SetBranchAddress("em_py",&em_py);
+Ttr1->SetBranchAddress("em_pz",&em_pz);
+Ttr1->SetBranchAddress("ep_px",&ep_px);
+Ttr1->SetBranchAddress("ep_py",&ep_py);
+Ttr1->SetBranchAddress("ep_pz",&ep_pz);
+Ttr1->SetBranchAddress("prot_px",&prot_px);
+Ttr1->SetBranchAddress("prot_py",&prot_py);
+Ttr1->SetBranchAddress("prot_pz",&prot_pz);
 
 Int_t nevent = (Int_t)Ttr1->GetEntries();
 Int_t nselected = 0;
@@ -363,7 +373,9 @@ for (Int_t i=0;i<nevent;i++) {
 
 //     cout << i << "\r"; 
     
-    if (i<10)   cout << Q2 << " " << t_t << " " << psf << " " << psf_flux << " " << crs_BH << " " << flux_factor << " " << L_em->M() << " " << L_ep->M() << " " << L_prot->M() << endl;
+//     if (i<10)   cout << Q2 << " " << t_t << " " << psf << " " << psf_flux << " " << crs_BH << " " << flux_factor << " " << L_em->M() << " " << L_ep->M() << " " << L_prot->M() << endl;
+    if (i<10)   cout << Q2 << " " << t_t << " " << psf << " " << psf_flux << " " << crs_BH << " " << flux_factor << " " << em_px<< " " <<em_py<< " " <<em_pz<< " " <<ep_px<< " " <<ep_py<< " " <<ep_pz<< " " <<prot_px<< " " <<prot_py<< " " <<prot_pz <<  endl;
+    
     
     Double_t id = i;
     Double_t neventd = nevent;
@@ -375,22 +387,27 @@ for (Int_t i=0;i<nevent;i++) {
       }
     }    
     
-  if (crs_BH > 10000000)     if (i<10)   cout << Q2 << " " << t_t << " " << psf << " " << psf_flux << " " << crs_BH << " " << flux_factor << " " << L_em->M() << " " << L_ep->M() << " " << L_prot->M() << endl;
-
-
+  if (crs_BH > 1000000) {
+    cout << "crs > 1e6" << endl;
+      cout << Q2 << " " << t_t << " " << psf << " " << psf_flux << " " << crs_BH << " " << flux_factor << " " << em_px<< " " <<em_py<< " " <<em_pz<< " " <<ep_px<< " " <<ep_py<< " " <<ep_pz<< " " <<prot_px<< " " <<prot_py<< " " <<prot_pz <<  endl;
+  }
 
       hcrs_BH_log->Fill(log10(crs_BH));
   
-//       if (isinf(crs_BH) || isnan(crs_BH) ) {cout << nevt << " " << crs_BH << endl; continue;}
-//       if (isinf(crs_BH) || TMath::IsNaN(crs_BH) ) {nocounter++; continue;}
+//       if (isinf(crs_BH) || isnan(crs_BH) ) {cout << i << " " << crs_BH << endl; continue;}
+      if (isinf(crs_BH) || TMath::IsNaN(crs_BH) ) {nocounter++; continue;}
 //       if (TMath::IsNaN(crs_BH)) {nocounter++; continue;}      
 //      cout << i << " " << crs_BH << endl;
       
       yescounter++;      
 
-      TLorentzVector pr=*L_prot,e=*L_em,p=*L_ep;
+//       TLorentzVector pr=*L_prot,e=*L_em,p=*L_ep;
+      TLorentzVector e,p,pr;
+      e.SetXYZM(em_px,em_py,em_pz,0.000511);
+      p.SetXYZM(ep_px,ep_py,ep_pz,0.000511);      
+      pr.SetXYZM(prot_px,prot_py,prot_pz,0.938);
       
-      ///smear by resolution mom 4%, theta 1mr, phi 6mr
+      //smear by resolution mom 4%, theta 1mr, phi 6mr
       pr.SetRho(gRandom->Gaus(pr.P(),pr.P()*0.04));
       pr.SetTheta(gRandom->Gaus(pr.Theta(),1e-3));
       pr.SetPhi(gRandom->Gaus(pr.Phi(),6e-3));
@@ -424,7 +441,7 @@ for (Int_t i=0;i<nevent;i++) {
       double W=(ph+target).M();
       double tau=InvM_ep*InvM_ep/(s-M*M);
       double eta=tau/(2-tau);
-      double tmin=4*eta*eta*M*M/(1-eta*eta);
+//       double tmin=4*eta*eta*M*M/(1-eta*eta);
       
       if(InvM_ep <2 || InvM_ep > 3) continue;      
       
@@ -471,19 +488,19 @@ for (Int_t i=0;i<nevent;i++) {
        if (hacceptance_positive_forwardangle->GetBinContent(hacceptance_positive_forwardangle->FindBin(pr_theta*DEG,pr_mom)) > 0 && pr_mom > 4.6)  acc_proton=0; //cut away 4.6 at forwardangel for proton
       }   
       else if (detector=="CLAS12"){
+	  //note CLAS12 phi (0,360), TCS sim phi (-180,180) 	
 	  acc_proton=hacceptance_PThetaPhi_positive->GetBinContent(hacceptance_PThetaPhi_positive->FindBin(pr_phi*DEG+180,pr_theta*DEG,pr_mom));
 	  if (p_theta*DEG<36) acc_positron=hacceptance_PThetaPhi_positive->GetBinContent(hacceptance_PThetaPhi_positive->FindBin(p_phi*DEG+180,p_theta*DEG,p_mom));
 	  if (e_theta*DEG<36) acc_electron=hacceptance_PThetaPhi_negative->GetBinContent(hacceptance_PThetaPhi_negative->FindBin(e_phi*DEG+180,e_theta*DEG,e_mom));
-	  ///note CLAS12 phi (0,360), TCS sim phi (-180,180) 
 	  if (acc_proton < 0.9 || acc_positron < 0.9 || acc_electron < 0.9) {acc_proton=acc_positron=acc_electron=0;}  //cut away unsure low acceptance	  
       }
       else if (detector=="EIC"){}
       else {return 0;}
       double acc=acc_proton*acc_positron*acc_electron;
       
-      /// cut to quasi real
+      // cut to quasi real
       double acc_cut=1;
-      if(fabs(Miss.M2())>0.02 || fabs(Miss.Px()/Miss.P())>0.2 || fabs(Miss.Py()/Miss.P())>0.2) acc_cut=0;
+//       if(fabs(Miss.M2())>0.05 || fabs(Miss.Px()/Miss.P())>0.2 || fabs(Miss.Py()/Miss.P())>0.2) acc_cut=0;
 
 // 	cout << acc << " " << acc_proton << " " << acc_positron << " " << acc_electron << endl;
 // 	cout << pr_theta*DEG << " " << pr_phi*DEG << " " << p_theta*DEG << " " << p_phi*DEG << " " << e_theta*DEG << " " << e_phi*DEG << endl;
@@ -493,7 +510,7 @@ for (Int_t i=0;i<nevent;i++) {
       weight[2]=weight[1]*acc;
       weight[3]=weight[2]*overall_NOpsf;
       weight[4]=weight[3]*acc_cut;
-// //       doubleD weight[n]={1,crs_BH*psf*psf_flux*flux_factor,crs_BH*psf*psf_flux*flux_factor*acc,crs_BH*psf*psf_flux*flux_factor*acc*overall_NOpsf};
+//       double weight[n]={1,crs_BH*psf*psf_flux*flux_factor,crs_BH*psf*psf_flux*flux_factor*acc,crs_BH*psf*psf_flux*flux_factor*acc*overall_NOpsf};
       for(int k=0;k<n;k++){
 	hphoton_mom[k]->Fill(ph_mom,weight[k]);
 	hproton_theta_mom[k]->Fill(pr_theta*DEG,pr_mom,weight[k]);
@@ -529,15 +546,14 @@ for (Int_t i=0;i<nevent;i++) {
 	hMissMM2->Fill(Miss.M2(),weight[index-1]);
         hMissPx->Fill(Miss.Px()/Miss.P(),weight[index-1]);
         hMissPy->Fill(Miss.Py()/Miss.P(),weight[index-1]);
-		
-	
+			
 	ht_final->Fill(t,weight[index]);
 	heta_final->Fill(eta,weight[index]);
 	hQ2_final->Fill(Q2,weight[index]);
 	heta_t_final->Fill(eta,t,weight[index]);
 	heta_Q2_final->Fill(eta,Q2,weight[index]);
 	ht_Q2_final->Fill(t,Q2,weight[index]);
-// 	heta_t_Q2_final->Fill(eta,t,Q2,weight[index]);
+	heta_t_Q2_final->Fill(eta,t,Q2,weight[index]);
 
 	ht_final_bin->Fill(t,weight[index]);
 	heta_final_bin->Fill(eta,weight[index]);
@@ -545,14 +561,14 @@ for (Int_t i=0;i<nevent;i++) {
 	heta_t_final_bin->Fill(eta,t,weight[index]);
 	heta_Q2_final_bin->Fill(eta,Q2,weight[index]);
 	ht_Q2_final_bin->Fill(t,Q2,weight[index]);
-// 	heta_t_Q2_final_bin->Fill(eta,t,Q2,weight[index]);
+	heta_t_Q2_final_bin->Fill(eta,t,Q2,weight[index]);
         
-//       if (6 < ph_mom && ph_mom < 11) {
-// 	hgen_t_Q2[int((ph_mom-6)/0.25)]->Fill(t,Q2,psf);
-// //       hgen_t_Q2[int((ph_mom-6)/0.25)]->Fill(t,InvM_ep);      
-//       
-// 	if (0.5<t && t <1.6 && 1 < Q2 && Q2< 4) hgen_theta_phi_CM[int((ph_mom-6)/0.25)]->Fill(phi_CM,cos(theta_CM));
-//       }
+      if (6 < ph_mom && ph_mom < 11) {
+	hgen_t_Q2[int((ph_mom-6)/0.25)]->Fill(t,Q2,psf);
+// 	hgen_t_Q2[int((ph_mom-6)/0.25)]->Fill(t,InvM_ep);      
+      
+	if (0.5<t && t <1.6 && 1 < Q2 && Q2< 4) hgen_theta_phi_CM[int((ph_mom-6)/0.25)]->Fill(phi_CM,cos(theta_CM));
+      }
 
 //       int etabin=int((s-12.)/((22.-12.)/Netabin));
 //       int tbin=int((t-0.)/((3.2-0.)/Ntbin));
@@ -590,7 +606,7 @@ for (Int_t i=0;i<nevent;i++) {
       else {
 	cout << etabin << " " << Q2bin  << " " << tbin << endl;
 	cout << "out of range " << eta << " " << Q2 << " " << t << endl;	
-      }    
+      } 
 
 	
 // 	  cout << etabin << " " << tbin << " " << Q2bin << " " << countbin[etabin][Q2bin][tbin] <<  endl;
@@ -599,7 +615,7 @@ for (Int_t i=0;i<nevent;i++) {
 }
 
       cout << "yescounter " << yescounter << " nocounter " << nocounter << endl;      
-  
+ 
 for(int etabin=0;etabin<Netabin;etabin++){
 for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
 for(int tbin=0;tbin<Ntbin;tbin++){  
@@ -828,12 +844,12 @@ heta_Q2_final_bin->Draw("colz");
 c_kin->cd(12);
 ht_Q2_final_bin->Draw("colz");
 
-// TCanvas *c_kin_3D = new TCanvas("kin_3D","kin_3D",1600,800);
-// c_kin_3D->Divide(2,1);
-// c_kin_3D->cd(1);
-// heta_t_Q2_final->Draw();
-// c_kin_3D->cd(2);
-// heta_t_Q2_final_bin->Draw();
+TCanvas *c_kin_3D = new TCanvas("kin_3D","kin_3D",1600,800);
+c_kin_3D->Divide(2,1);
+c_kin_3D->cd(1);
+heta_t_Q2_final->Draw();
+c_kin_3D->cd(2);
+heta_t_Q2_final_bin->Draw();
 
 TCanvas *c_t_Q2_etabin = new TCanvas("t_Q2_etabin","t_Q2_etabin",1600,800);
 c_t_Q2_etabin->Divide(Netabin/2,2);

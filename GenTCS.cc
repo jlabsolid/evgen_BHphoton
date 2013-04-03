@@ -71,10 +71,12 @@ int main(int argc, char* argv[])
   double flux_factor;
   double delt_perp;
   
+  double em_px,em_py,em_pz,ep_px,ep_py,ep_pz,prot_px,prot_py,prot_pz;
+  
   TTree *tr1 = new TTree("tr1", "TCS kinematics");
-  tr1->Branch("L_em", "TLorentzVector", &L_em, 3200, 99);
-  tr1->Branch("L_ep", "TLorentzVector", &L_ep, 3200, 99);
-  tr1->Branch("L_prot", "TLorentzVector", &L_prot, 3200, 99);
+//   tr1->Branch("L_em", "TLorentzVector", &L_em, 3200, 99);
+//   tr1->Branch("L_ep", "TLorentzVector", &L_ep, 3200, 99);
+//   tr1->Branch("L_prot", "TLorentzVector", &L_prot, 3200, 99);
   tr1->Branch("Q2", &Q2, "Q2/D");
   tr1->Branch("t", &t, "t/D");
   tr1->Branch("psf", &psf, "psf/D");
@@ -82,6 +84,15 @@ int main(int argc, char* argv[])
   //tr1->Branch("delt_perp", &delt_perp, "delt_perp/D");
   tr1->Branch("psf_flux", &psf_flux, "psf_flux/D");
   tr1->Branch("flux_factor", &flux_factor, "flux_factor/D");
+  tr1->Branch("em_px", &em_px, "em_px/D");
+  tr1->Branch("em_py", &em_py, "em_py/D");  
+  tr1->Branch("em_pz", &em_pz, "em_pz/D");  
+  tr1->Branch("ep_px", &ep_px, "ep_px/D");
+  tr1->Branch("ep_py", &ep_py, "ep_py/D");  
+  tr1->Branch("ep_pz", &ep_pz, "ep_pz/D");  
+  tr1->Branch("prot_px", &prot_px, "prot_px/D");
+  tr1->Branch("prot_py", &prot_py, "prot_py/D");  
+  tr1->Branch("prot_pz", &prot_pz, "prot_pz/D");  
   
   TTCS_crs tcs_crs1;
   TTCS_kine tcs_kine1;
@@ -195,6 +206,16 @@ int main(int argc, char* argv[])
 	      // cout<<"psf_Q2:psf_tM:psf_phi_cm:psf_th_cm:Q2:tM:phi_cm:th_cm:psf"<<
 	      //   psf_Q2<<" "<<psf_tM<<" "<<psf_phi_cm<<" "<<psf_th_cm<<" "<<Q2<<" "<<t<<" "<<phi_cm<<" "<<th_cm<<" "<<psf<<endl;
 	      
+	      em_px=L_em.Px();
+	      em_py=L_em.Py();
+	      em_pz=L_em.Pz();
+	      ep_px=L_ep.Px();
+	      ep_py=L_ep.Py();
+	      ep_pz=L_ep.Pz();
+	      prot_px=L_prot.Px();
+	      prot_py=L_prot.Py();
+	      prot_pz=L_prot.Pz();
+
 	      tr1->Fill();
 	    }
 	  // else
