@@ -17,9 +17,10 @@ To compile
 setup root env
 make
 setenv LD_LIBRARY_PATH ./:${LD_LIBRARY_PATH}
-./GenTCS.exe Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) Nsim
+./GenTCS.exe Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) l(cm) Nsim
 
-choose Ep as 0 for fixed target (jlab 12GeV) or non-0 for collider (EIC)
+choose Ep 0 and l for fixed target (jlab 12GeV)
+choose Ep non-0 and l 0 for collider (EIC)
 
 The output tree is in GenTCS.root
 

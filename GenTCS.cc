@@ -15,14 +15,15 @@
 using namespace std;
 
 double N_EPA(double, double, double); // 1st argument is Eg, the secon one is Q2_max (0.02)
+double Brem_Approx(double, double,double); // argument Eg, Eb, l as target length
 
 int main(int argc, char* argv[])
 { 
-  double Eb=11.,Eg_min=4.2,t_lim=3.2,Ep=0.;
+  double Eb=11.,Eg_min=4.2,t_lim=3.2,Ep=0.,l=15;
   int Nsim=1e6;
   
-  if (argc != 6 || argv[1]=="-h") {
-    cout << "input: Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) Nsim" << endl; 
+  if (argc != 7 || argv[1]=="-h") {
+    cout << "input: Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) l(cm) Nsim" << endl; 
     return 0;    
   }
   else {        
@@ -30,7 +31,8 @@ int main(int argc, char* argv[])
     Eg_min=atof(argv[2]);
     t_lim=-atof(argv[3]);
     Ep=atof(argv[4]);
-    Nsim=int(atof(argv[5]));
+    l=atof(argv[5]);    
+    Nsim=int(atof(argv[6]));
   }
   
 //     const double Ep = 0.;    
@@ -117,7 +119,13 @@ int main(int argc, char* argv[])
       
       double Eg = rand->Uniform(Eg_min, Eb);
       
-      flux_factor = N_EPA(Eg, 0.02, Eb);
+      if (Ep==0) {
+	flux_factor = N_EPA(Eg, 0.02, Eb)+Brem_Approx(Eg,Eb,l);
+      }
+      else {
+      	flux_factor = N_EPA(Eg, 0.02, Eb);
+      }
+      
       psf_flux = Eb - Eg_min;
 
       TLorentzVector ph(0.,0.,Eg,Eg);      
@@ -244,4 +252,10 @@ double N_EPA(double Eg, double Q2_max, double Eb)
   double Mp = 0.9383;
   double Q2_min = me*me*x*x/(1 - x);
   return (1/Eb)*alpha/(PI*x)*( (1 - x + x*x/2)*log(Q2_max/Q2_min) - (1 - x));
+}
+
+double Brem_Approx(double Eg, double Eb,double l)
+{
+  double X_0 = 890.;   // LH2 rad. length in cm
+  return 0.5*(l/X_0)*(4./3.)*(1/Eg-1/Eb); // 0.5 is for effectiv luminosity (after integration int_0^l (l-x)dx )
 }
