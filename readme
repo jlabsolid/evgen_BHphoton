@@ -17,19 +17,28 @@ To compile
 setup root env
 make
 setenv LD_LIBRARY_PATH ./:${LD_LIBRARY_PATH}
-./GenTCS.exe Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) l(cm) Nsim
+./GenTCS.exe Eb(GeV) Eg_min(GeV) Q2_max(GeV2) t_lim(GeV2) Ep(GeV) l(cm) Nsim
 
-choose Ep 0 and l for fixed target (jlab 12GeV)
-choose Ep non-0 and l 0 for collider (EIC)
+typical SoLID choice 
+double Eb=11.,Eg_min=4.2,Q2_max=0.05,t_lim=3.2,Ep=0.,l=15;
+
+Q'2 (InvM^2 of decayleptopn pair) is set in code as 4 to 9
+
+choose Ep=0 and l=non-0 for fixed target (jlab 12GeV)
+choose Ep=non-0 and l=0 for collider (EIC)
 
 The output tree is in GenTCS.root
 
 anaTCS.C can be used to analyze the output tree
-As script, it's too slow.
-compile it first, then run
+It's too slow to run as script, better run as binary
 in root
-.L anaTCS.C+
-anaTCS("GenTCS.root","SoLID")
+.x anaTCS.C+("GenTCS.root","SoLID")
+change SoLID to CLAS12 or EIC for other 
 
-
+root file with acceptance histogram is needed for anaTCS.C to work
+download
+acceptance_solid_CLEO_JPsi_negative_target300_output.root
+clas12_acceptance_pipele_largebin.root
+from
+http://hallaweb.jlab.org/12GeV/SoLID/download/sim/acceptance/
 

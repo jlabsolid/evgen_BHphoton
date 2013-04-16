@@ -19,20 +19,21 @@ double Brem_Approx(double, double,double); // argument Eg, Eb, l as target lengt
 
 int main(int argc, char* argv[])
 { 
-  double Eb=11.,Eg_min=4.2,t_lim=3.2,Ep=0.,l=15;
+  double Eb=11.,Eg_min=4.2,Q2_max=0.05,t_lim=3.2,Ep=0.,l=15;
   int Nsim=1e6;
   
-  if (argc != 7 || argv[1]=="-h") {
-    cout << "input: Eb(GeV) Eg_min(GeV) t_lim(GeV) Ep(GeV) l(cm) Nsim" << endl; 
+  if (argc != 8 || argv[1]=="-h") {
+    cout << "input: Eb(GeV) Eg_min(GeV) Q2_max(GeV2) t_lim(GeV2) Ep(GeV) l(cm) Nsim" << endl; 
     return 0;    
   }
   else {        
     Eb=atof(argv[1]);
     Eg_min=atof(argv[2]);
-    t_lim=-atof(argv[3]);
-    Ep=atof(argv[4]);
-    l=atof(argv[5]);    
-    Nsim=int(atof(argv[6]));
+    Q2_max=atof(argv[3]);    
+    t_lim=-atof(argv[4]);
+    Ep=atof(argv[5]);
+    l=atof(argv[6]);    
+    Nsim=int(atof(argv[7]));
   }
   
 //     const double Ep = 0.;    
@@ -120,10 +121,10 @@ int main(int argc, char* argv[])
       double Eg = rand->Uniform(Eg_min, Eb);
       
       if (Ep==0) {
-	flux_factor = N_EPA(Eg, 0.02, Eb)+Brem_Approx(Eg,Eb,l);
+	flux_factor = N_EPA(Eg, Q2_max, Eb)+Brem_Approx(Eg,Eb,l);
       }
       else {
-      	flux_factor = N_EPA(Eg, 0.02, Eb);
+      	flux_factor = N_EPA(Eg, Q2_max, Eb);
       }
       
       psf_flux = Eb - Eg_min;
