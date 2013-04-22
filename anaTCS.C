@@ -132,10 +132,11 @@ hacceptance_positive->Add(hacceptance_positive_forwardangle);
 }
 else if (detector=="CLAS12"){
 //   TFile *acceptancefile=new TFile("clas12_acceptance_pipele.root");
-  TFile *acceptancefile=new TFile("clas12_acceptance_pipele_largebin.root");
-
-  hacceptance_PThetaPhi_positive=(TH3F*) acceptancefile->Get("acceptance_PThetaPhi_positive");  
-  hacceptance_PThetaPhi_negative=(TH3F*) acceptancefile->Get("acceptance_PThetaPhi_negative");
+//   TFile *acceptancefile=new TFile("clas12_acceptance_pipele_largebin.root");
+  TFile *acceptancefile=new TFile("clasev_acceptance.root");
+  
+  hacceptance_PThetaPhi_positive=(TH3F*) acceptancefile->Get("acceptance_PThetaPhi_pip");  
+  hacceptance_PThetaPhi_negative=(TH3F*) acceptancefile->Get("acceptance_PThetaPhi_ele");
   
 //   TCanvas *c_acceptance = new TCanvas("acceptance","acceptance",1200,900);
 //   c_acceptance->Divide(2,1);
@@ -282,36 +283,41 @@ for(int k=0;k<n;k++){
 
 const int Nsbin=6;
 const int Netabin=6;
-const int NQ2bin=4;
+const int NQ2bin=3;
 const int Ntbin=4;
+double etabin_edge[Netabin+1]={0.1,0.140,0.175,0.195,0.210,0.230,0.4};
 double sbin_edge[Nsbin+1]={11,14.5,16,17,18,19.5,23};
-double etabin_edge[Netabin+1]={0.10,0.15,0.175,0.19,0.21,0.24,0.40};
-double Q2bin_edge[NQ2bin+1]={4,4.25,4.75,6.0,9};
+double Q2bin_edge[NQ2bin+1]={4,4.4,4.9,9};
 // double Q2bin_edge[NQ2bin+1]={4,4.25,4.75,5.25,6.0,9};
 // double tbin_edge[Ntbin+1]={0.0,0.2,0.4,0.8,1.6,3.2};
 double tbin_edge[Ntbin+1]={0.0,0.1,0.3,0.7,1.5};
 // double tbin_edge[Ntbin+1]={0.0,0.3,0.34,0.38,0.42,0.8,1.6,3.2};
 
-double Q2_min_etabin[Netabin]={4,4,4,4,4,4};
-double Q2_max_etabin[Netabin]={5.5,6.0,6.5,7.0,8.0,9.0};
-double t_min_etabin[Netabin]={0.05,0.10,0.15,0.18,0.22,0.25};
-double t_max_etabin[Netabin]={0.17,0.22,0.25,0.35,0.55,1.00};
+const int NQ2bin_etabin=5;
+// double Q2bin_etabin_edge[Netabin][NQ2bin_etabin+1]={
+double Q2bin_etabin_edge[36]={
+4.00,4.15,4.25,4.40,4.60,5.00,
+4.00,4.25,4.45,4.70,5.05,6.00,
+4.00,4.10,4.35,4.70,5.40,6.50,
+4.00,4.20,4.40,4.65,5.25,7.00,
+4.00,4.35,4.65,4.85,5.25,7.50,
+4.00,4.65,5.20,5.60,6.00,9.00
+};
 
-double countbin[Netabin][5][5];
+cout << "Q2bin_etabin_center" <<  endl;
 for(int etabin=0;etabin<Netabin;etabin++){
-for(int Q2bin=0;Q2bin<5;Q2bin++){
-for(int tbin=0;tbin<5;tbin++){ 
-  countbin[etabin][Q2bin][tbin]=0;
-}}}
-
-TH2F *ht_Q2_sbin[Nsbin],*ht_Q2_sbin_even[Nsbin];
-for(int sbin=0;sbin<Nsbin;sbin++){
-  char hstname[100];
-  sprintf(hstname,"t_Q2_sbin_%i",sbin);  
-  ht_Q2_sbin[sbin]=new TH2F(hstname,hstname,120,0,1,140,3,10);     
-  sprintf(hstname,"t_Q2_sbin_even_%i",sbin);  
-  ht_Q2_sbin_even[sbin]=new TH2F(hstname,hstname,120,0,1,140,3,10);    
+for(int Q2bin=0;Q2bin<NQ2bin_etabin;Q2bin++){
+  cout << (Q2bin_etabin_edge[etabin*(NQ2bin_etabin+1)+Q2bin+1]+Q2bin_etabin_edge[etabin*(NQ2bin_etabin+1)+Q2bin])/2 << "\t";
 }
+  cout << endl;
+}
+
+double countbin_etabin[Netabin][NQ2bin_etabin][1];
+for(int etabin=0;etabin<Netabin;etabin++){
+for(int Q2bin=0;Q2bin<NQ2bin_etabin;Q2bin++){
+for(int tbin=0;tbin<1;tbin++){ 
+  countbin_etabin[etabin][Q2bin][tbin]=0;
+}}}
 
 TH2F *htheta_phi_CM_etabin[Netabin];
 TH2F *ht_Q2_etabin[Netabin],*ht_Q2_etabin_even[Netabin];
@@ -325,7 +331,53 @@ for(int etabin=0;etabin<Netabin;etabin++){
   htheta_phi_CM_etabin[etabin]=new TH2F(hstname,hstname,180,-3.15,3.15,180,0,3.15);
 }
 
-// double countbin[Netabin][Ntbin][NQ2bin];
+
+const int Netabin_Q2bin=12;
+double etabin_Q2bin_edge[39]={
+0.100,0.125,0.135,0.145,0.155,0.175,0.180,0.190,0.195,0.202,0.207,0.220,0.280,
+0.115,0.135,0.140,0.150,0.158,0.170,0.180,0.195,0.202,0.210,0.220,0.230,0.280,
+0.125,0.155,0.170,0.180,0.190,0.200,0.215,0.225,0.232,0.240,0.250,0.265,0.380
+};
+
+cout << "etabin_Q2bin_center" <<  endl;
+for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
+for(int etabin=0;etabin<Netabin_Q2bin;etabin++){
+  cout << (etabin_Q2bin_edge[Q2bin*(Netabin_Q2bin+1)+etabin+1]+etabin_Q2bin_edge[Q2bin*(Netabin_Q2bin+1)+etabin])/2 << "\t";
+}
+  cout << endl;
+}
+
+
+double countbin_Q2bin[NQ2bin][Netabin_Q2bin][1];
+for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
+for(int etabin=0;etabin<Netabin_Q2bin;etabin++){
+for(int tbin=0;tbin<1;tbin++){ 
+  countbin_Q2bin[Q2bin][etabin][tbin]=0;
+}}}
+
+TH2F *htheta_phi_CM_Q2bin[NQ2bin];
+TH2F *ht_eta_Q2bin[NQ2bin],*ht_eta_Q2bin_even[NQ2bin];
+for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
+    char hstname[100];
+  sprintf(hstname,"t_eta_Q2bin_%i",Q2bin);  
+  ht_eta_Q2bin[Q2bin]=new TH2F(hstname,hstname,120,0,1,100,0,0.5);     
+  sprintf(hstname,"t_eta_Q2bin_even_%i",Q2bin);  
+  ht_eta_Q2bin_even[Q2bin]=new TH2F(hstname,hstname,120,0,1,100,0,0.5);     
+  sprintf(hstname,"theta_phi_CM_Q2bin_%i",Q2bin);  
+  htheta_phi_CM_Q2bin[Q2bin]=new TH2F(hstname,hstname,180,-3.15,3.15,180,0,3.15);
+}
+
+TH2F *ht_Q2_sbin[Nsbin],*ht_Q2_sbin_even[Nsbin];
+for(int sbin=0;sbin<Nsbin;sbin++){
+  char hstname[100];
+  sprintf(hstname,"t_Q2_sbin_%i",sbin);  
+  ht_Q2_sbin[sbin]=new TH2F(hstname,hstname,120,0,1,140,3,10);     
+  sprintf(hstname,"t_Q2_sbin_even_%i",sbin);  
+  ht_Q2_sbin_even[sbin]=new TH2F(hstname,hstname,120,0,1,140,3,10);    
+}
+
+
+// double countbin_etabin[Netabin][Ntbin][NQ2bin];
 // // TH2F *hThetaPhiCM_etabin_Q2bin_tbin[Netabin][NQ2bin][Ntbin]; 
 // for(int etabin=0;etabin<Netabin;etabin++){
 // for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
@@ -333,7 +385,7 @@ for(int etabin=0;etabin<Netabin;etabin++){
 // //   char hstname[100];
 // //   sprintf(hstname,"ThetaPhiCM_etabin_Q2bin_tbin_%i_%i_%i",etabin,Q2bin,tbin);  
 // //   hThetaPhiCM_etabin_Q2bin_tbin[etabin][Q2bin][tbin]=new TH2F(hstname,hstname,45,-3.15,3.15,45,0,3.15);  
-//   countbin[etabin][Q2bin][tbin]=0;
+//   countbin_etabin[etabin][Q2bin][tbin]=0;
 // }}}
 
 // vector<TH2F> *hThetaPhiCM_etabin_Q2bin_tbin;
@@ -512,8 +564,8 @@ for (Int_t i=0;i<nevent;i++) {
        if (acc_electron_largeangle  >0) res_index_electron=1;
        if (acc_positron_forwardangle>0) res_index_positron=0;
        if (acc_positron_largeangle  >0) res_index_positron=1;
-       if (acc_proton_forwardangle>0) res_index_proton=0;
-       if (acc_proton_largeangle  >0) res_index_proton=1;
+       if (acc_proton_forwardangle  >0) res_index_proton=0;
+       if (acc_proton_largeangle    >0) res_index_proton=1;
       }   
       else if (detector=="CLAS12"){
 	  //note CLAS12 phi (0,360), TCS sim phi (-180,180) 	
@@ -543,23 +595,36 @@ for (Int_t i=0;i<nevent;i++) {
       if (cut!=true) acc=acc_proton*acc_positron*acc_electron;      
       
       ///smear by detector resolution
-      double temp_p,temp_theta,temp_phi;
-      temp_p=pr.P();      temp_theta=pr.Theta();      temp_phi=pr.Phi();
-      pr.SetRho(gRandom->Gaus(temp_p,temp_p*resolution_p[res_index_proton]));
-      pr.SetTheta(gRandom->Gaus(temp_theta,resolution_theta[res_index_proton]));
-      pr.SetPhi(gRandom->Gaus(temp_phi,resolution_theta[res_index_proton]));
-      pr.SetXYZM(pr.Px(),pr.Py(),pr.Pz(),0.938);
-      temp_p=p.P();      temp_theta=p.Theta();      temp_phi=p.Phi();
-      p.SetRho(gRandom->Gaus(temp_p,temp_p*resolution_p[res_index_positron]));
-      p.SetTheta(gRandom->Gaus(temp_theta,resolution_theta[res_index_positron]));
-      p.SetPhi(gRandom->Gaus(temp_phi,resolution_theta[res_index_positron]));
-      p.SetXYZM(p.Px(),p.Py(),p.Pz(),0.000511);
-      temp_p=e.P();      temp_theta=e.Theta();      temp_phi=e.Phi();
-      e.SetRho(gRandom->Gaus(temp_p,temp_p*resolution_p[res_index_electron]));
-      e.SetTheta(gRandom->Gaus(temp_theta,resolution_theta[res_index_electron]));
-      e.SetPhi(gRandom->Gaus(temp_phi,resolution_theta[res_index_electron]));
-      e.SetXYZM(e.Px(),e.Py(),e.Pz(),0.000511);
+//       double temp_p,temp_theta,temp_phi;
+//       temp_p=pr.P();      temp_theta=pr.Theta();      temp_phi=pr.Phi();
+//       pr.SetRho(gRandom->Gaus(temp_p,temp_p*resolution_p[res_index_proton]));
+//       pr.SetTheta(gRandom->Gaus(temp_theta,resolution_theta[res_index_proton]));
+//       pr.SetPhi(gRandom->Gaus(temp_phi,resolution_phi[res_index_proton]));
+//       pr.SetXYZM(pr.Px(),pr.Py(),pr.Pz(),0.938);
+//       temp_p=p.P();      temp_theta=p.Theta();      temp_phi=p.Phi();
+//       p.SetRho(gRandom->Gaus(temp_p,temp_p*resolution_p[res_index_positron]));
+//       p.SetTheta(gRandom->Gaus(temp_theta,resolution_theta[res_index_positron]));
+//       p.SetPhi(gRandom->Gaus(temp_phi,resolution_phi[res_index_positron]));
+//       p.SetXYZM(p.Px(),p.Py(),p.Pz(),0.000511);
+//       temp_p=e.P();      temp_theta=e.Theta();      temp_phi=e.Phi();
+//       e.SetRho(gRandom->Gaus(temp_p,temp_p*resolution_p[res_index_electron]));
+//       e.SetTheta(gRandom->Gaus(temp_theta,resolution_theta[res_index_electron]));
+//       e.SetPhi(gRandom->Gaus(temp_phi,resolution_phi[res_index_electron]));
+//       e.SetXYZM(e.Px(),e.Py(),e.Pz(),0.000511);
       
+      double temp_p,temp_theta,temp_phi;
+      temp_p=gRandom->Gaus(pr.P(),pr.P()*resolution_p[res_index_proton]);
+      temp_theta=gRandom->Gaus(pr.Theta(),resolution_theta[res_index_proton]);
+      temp_phi=gRandom->Gaus(pr.Phi(),resolution_theta[res_index_proton]);
+      pr.SetXYZM(temp_p*sin(temp_theta)*cos(temp_phi),temp_p*sin(temp_theta)*sin(temp_phi),temp_p*cos(temp_theta),0.938);
+      temp_p=gRandom->Gaus(p.P(),p.P()*resolution_p[res_index_positron]);
+      temp_theta=gRandom->Gaus(p.Theta(),resolution_theta[res_index_positron]);
+      temp_phi=gRandom->Gaus(p.Phi(),resolution_theta[res_index_positron]);
+      p.SetXYZM(temp_p*sin(temp_theta)*cos(temp_phi),temp_p*sin(temp_theta)*sin(temp_phi),temp_p*cos(temp_theta),0.000511);
+      temp_p=gRandom->Gaus(e.P(),e.P()*resolution_p[res_index_electron]);
+      temp_theta=gRandom->Gaus(e.Theta(),resolution_theta[res_index_electron]);
+      temp_phi=gRandom->Gaus(e.Phi(),resolution_theta[res_index_electron]);
+      e.SetXYZM(temp_p*sin(temp_theta)*cos(temp_phi),temp_p*sin(temp_theta)*sin(temp_phi),temp_p*cos(temp_theta),0.000511);      
   
       double M=0.938;      
 //       TLorentzVector target(0.,0.,0.,M);                  
@@ -582,8 +647,9 @@ for (Int_t i=0;i<nevent;i++) {
       double s=(ph+target).M2();
       double W=(ph+target).M();
       double tau=InvM_ep*InvM_ep/(s-M*M);
-      double eta=tau/(2-tau);
-//       double tmin=4*eta*eta*M*M/(1-eta*eta);
+//       double eta=tau/(2-tau);
+      double eta=Q2/(2*(s-M*M)-Q2-t);
+      double t_min=4*eta*eta*M*M/(1-eta*eta);
       
       if(InvM_ep <2 || InvM_ep > 3) continue;      
       
@@ -698,6 +764,8 @@ for (Int_t i=0;i<nevent;i++) {
 	heta_t_Q2_final_bin->Fill(eta,t,Q2,weight[index]);
 	hs_t_Q2_final_bin->Fill(s,t,Q2,weight[index]);		
         
+      if ((t-t_min) > 0.2) continue;
+      
       int sbin_even=int((s-10)/((25-10)/Nsbin));
       int etabin_even=int((eta-0.1)/((0.4-0.1)/Netabin));
       int Q2bin_even=int((Q2-4.)/((9.-4.)/NQ2bin));
@@ -717,32 +785,42 @@ for (Int_t i=0;i<nevent;i++) {
 	for (int k=0;k<NQ2bin;k++)  if (*(Q2bin_edge+k) <= Q2 && Q2 < *(Q2bin_edge+k+1)) Q2bin=k;
 	for (int k=0;k<Ntbin;k++) if (*(tbin_edge+k) <= t && t < *(tbin_edge+k+1)) tbin=k;
 	
-	
 	if (0 <= etabin && etabin < Netabin){
-	  int Q2bin_etabin=int((Q2-Q2_min_etabin[etabin])/((Q2_max_etabin[etabin]-Q2_min_etabin[etabin])/5.));
-	  int tbin_etabin=int((t-t_min_etabin[etabin])/((t_max_etabin[etabin]-t_min_etabin[etabin])/5.));  
-	  if ( (0 <= Q2bin && Q2bin < 5) && (0<= tbin && tbin < 5) ){
-	    countbin[etabin][Q2bin_etabin][tbin_etabin] += weight[index];
-	  }
+	    ht_Q2_etabin[etabin]->Fill(t,Q2,weight[index]);
+	    htheta_phi_CM_etabin[etabin]->Fill(phi_CM,theta_CM,weight[index]);
+	    int Q2bin_etabin=-1;
+	    for (int k=0;k<NQ2bin_etabin;k++)  if (*(Q2bin_etabin_edge+etabin*(NQ2bin_etabin+1)+k) <= Q2 && Q2 < *(Q2bin_etabin_edge+etabin*(NQ2bin_etabin+1)+k+1)) Q2bin_etabin=k;
+	    if ( (0 <= Q2bin_etabin && Q2bin_etabin < NQ2bin_etabin) ){
+	      countbin_etabin[etabin][Q2bin_etabin][0] += weight[index];
+	    }  
 	}
 	
-      if ( (0 <= etabin && etabin < Netabin) && (0 <= Q2bin && Q2bin < NQ2bin) && (0<= tbin && tbin < Ntbin) ){  
-	ht_Q2_etabin[etabin]->Fill(t,Q2,weight[index]);
-	htheta_phi_CM_etabin[etabin]->Fill(phi_CM,theta_CM,weight[index]);	
+	if (0 <= Q2bin && Q2bin < NQ2bin){
+	    ht_eta_Q2bin[Q2bin]->Fill(t,eta,weight[index]);
+	    htheta_phi_CM_Q2bin[Q2bin]->Fill(phi_CM,theta_CM,weight[index]);
+	    int etabin_Q2bin=-1;
+	    for (int k=0;k<Netabin_Q2bin;k++)  if (*(etabin_Q2bin_edge+Q2bin*(Netabin_Q2bin+1)+k) <= eta && eta < *(etabin_Q2bin_edge+Q2bin*(Netabin_Q2bin+1)+k+1)) etabin_Q2bin=k;
+	    if ( (0 <= etabin_Q2bin && etabin_Q2bin < Netabin_Q2bin) ){
+	      countbin_Q2bin[Q2bin][etabin_Q2bin][0] += weight[index];
+	    }  
+	}	
+	
+//       if ( (0 <= etabin && etabin < Netabin) && (0 <= Q2bin && Q2bin < NQ2bin) && (0<= tbin && tbin < Ntbin) ){  
 // 	cout << "in range " << etabin << " " << tbin << " " << Q2bin << endl;
 // 	hThetaPhiCM_etabin_Q2bin_tbin[etabin][Q2bin][tbin]->Fill(phi_CM,theta_CM,weight[index]);
 // 	vector<TH2F>::iterator iter=hThetaPhiCM_etabin_Q2bin_tbin->begin()+(etabin*Netabin+tbin*Ntbin+Q2bin*NQ2bin);
 // 	iter->Fill(phi_CM,theta_CM,weight[n-1]);
 
-// 	countbin[etabin][Q2bin][tbin] = countbin[etabin][Q2bin][tbin] + weight[index];
-      }
-      else {
+// 	countbin_etabin[etabin][Q2bin][tbin] = countbin_etabin[etabin][Q2bin][tbin] + weight[index];
+//       }
+//       else {
 // 	cout << etabin << " " << Q2bin  << " " << tbin << endl;
 // 	cout << "out of range " << eta << " " << Q2 << " " << t << endl;	
-	nocounter++;
-      } 
+// 	nocounter++;
+//       } 
       
-      if ( (0 <= sbin && sbin < Nsbin) && (0 <= Q2bin && Q2bin < NQ2bin) && (0<= tbin && tbin < Ntbin) ){  
+//       if ( (0 <= sbin && sbin < Nsbin) && (0 <= Q2bin && Q2bin < NQ2bin) && (0<= tbin && tbin < Ntbin) ){  
+      if ( (0 <= sbin && sbin < Nsbin) ){    
 	ht_Q2_sbin[sbin]->Fill(t,Q2,weight[index]);
       }
       else {
@@ -762,24 +840,24 @@ for (Int_t i=0;i<nevent;i++) {
 }
 
       cout << "yescounter " << yescounter << " nocounter " << nocounter << endl;      
- 
-for(int etabin=0;etabin<Netabin;etabin++){
-cout << "etabin " << etabin << " " <<  Q2_min_etabin[etabin] << " " << Q2_max_etabin[etabin] << " " << t_min_etabin[etabin] << " " << t_max_etabin[etabin] << endl;
-for(int Q2bin=0;Q2bin<5;Q2bin++){
-for(int tbin=0;tbin<5;tbin++){  
-//   double a=hThetaPhiCM_etabin_Q2bin_tbin[etabin][Q2bin][tbin]->Integral();
-//   cout << etabin << " " << Q2bin  << " " << tbin << " " << a << endl;
-  
-//   cout << etabin << " " << tbin << " " << Q2bin << endl;
-//   Double_t a=countbin[etabin][Q2bin][tbin];
-//   if (isinf(a) || TMath::IsNaN(a)) cout << etabin << " " << tbin << " " << Q2bin << " " << " bad" <<  endl;
 
-  cout << etabin << " " << Q2bin << " " <<  tbin << " "  << countbin[etabin][Q2bin][tbin] <<  endl;
-
-  //     vector<TH2F>::iterator iter=hThetaPhiCM_etabin_Q2bin_tbin->begin()+(etabin*Netabin+tbin*Ntbin+Q2bin*NQ2bin);
-//     cout << etabin << " " << tbin << " " << Q2bin << " " << iter->Integral() <<  endl;    
-      
-}}}        
+// for(int etabin=0;etabin<Netabin;etabin++){
+// cout << "etabin " << etabin << " " <<  Q2_min_etabin[etabin] << " " << Q2_max_etabin[etabin] << " " << t_min_etabin[etabin] << " " << t_max_etabin[etabin] << endl;
+// for(int Q2bin=0;Q2bin<5;Q2bin++){
+// for(int tbin=0;tbin<5;tbin++){  
+// //   double a=hThetaPhiCM_etabin_Q2bin_tbin[etabin][Q2bin][tbin]->Integral();
+// //   cout << etabin << " " << Q2bin  << " " << tbin << " " << a << endl;
+//   
+// //   cout << etabin << " " << tbin << " " << Q2bin << endl;
+// //   Double_t a=countbin_etabin[etabin][Q2bin][tbin];
+// //   if (isinf(a) || TMath::IsNaN(a)) cout << etabin << " " << tbin << " " << Q2bin << " " << " bad" <<  endl;
+// 
+//   cout << etabin << " " << Q2bin << " " <<  tbin << " "  << countbin_etabin[etabin][Q2bin][tbin] <<  endl;
+// 
+//   //     vector<TH2F>::iterator iter=hThetaPhiCM_etabin_Q2bin_tbin->begin()+(etabin*Netabin+tbin*Ntbin+Q2bin*NQ2bin);
+// //     cout << etabin << " " << tbin << " " << Q2bin << " " << iter->Integral() <<  endl;    
+//       
+// }}}        
 
 TCanvas *c_theta_mom = new TCanvas("theta_mom","theta_mom",1500,900);
 c_theta_mom->Divide(4,n);
@@ -848,10 +926,12 @@ for(int k=index;k<index+1;k++){
 TCanvas *c_ep_final = new TCanvas("ep_final","ep_final",1200,600);
 c_ep_final->Divide(2,1);
 c_ep_final->cd(1);
-hep_mom[index]->SetMinimum(0.01);
+gPad->SetLogz();
+// hep_mom[index]->SetMinimum(0.01);
 hep_mom[index]->Draw("colz");
 c_ep_final->cd(2);
-hep_theta[index]->SetMinimum(0.01);
+// hep_theta[index]->SetMinimum(0.01);
+gPad->SetLogz();
 hep_theta[index]->SetAxisRange(0,40,"X");
 hep_theta[index]->SetAxisRange(0,40,"Y");
 hep_theta[index]->Draw("colz");
@@ -1069,10 +1149,20 @@ c_t_Q2_etabin->cd(etabin+1);
 gPad->SetLogz();
 ht_Q2_etabin[etabin]->Draw("colz");
 char title[100];
-sprintf(title,"%.02f < #eta < %.02f;t (GeV^{2});Q2 (GeV^{2})",etabin_edge[etabin],etabin_edge[etabin+1]);
+sprintf(title,"%.03f < #eta < %.03f;t (GeV^{2});Q2 (GeV^{2})",etabin_edge[etabin],etabin_edge[etabin+1]);
 ht_Q2_etabin[etabin]->SetTitle(title);
 cout << ht_Q2_etabin[etabin]->Integral() << endl;
 }
+
+cout << "etabin " << endl;
+for(int etabin=0;etabin<Netabin;etabin++){
+for(int Q2bin=0;Q2bin<NQ2bin_etabin;Q2bin++){
+for(int tbin=0;tbin<1;tbin++){  
+  cout << countbin_etabin[etabin][Q2bin][tbin] <<  "\t" ;
+}}
+  cout << endl;
+}
+
 
 TCanvas *c_theta_phi_CM_etabin = new TCanvas("theta_phi_CM_etabin","theta_phi_CM_etabin",1600,800);
 c_theta_phi_CM_etabin->Divide(Netabin/2,2);
@@ -1085,7 +1175,6 @@ sprintf(title,"%.02f < #eta < %.02f;#phi_{CM} (rad);#theta_{CM} (rad})",etabin_e
 htheta_phi_CM_etabin[etabin]->SetTitle(title);
 }
 
-
 cout << "ht_Q2_etabin_even" << endl;
 TCanvas *c_t_Q2_etabin_even = new TCanvas("t_Q2_etabin_even","t_Q2_etabin_even",1600,800);
 c_t_Q2_etabin_even->Divide(Netabin/2,2);
@@ -1093,8 +1182,44 @@ for(int etabin_even=0;etabin_even<Netabin;etabin_even++){
 c_t_Q2_etabin_even->cd(etabin_even+1);
 gPad->SetLogz();
 ht_Q2_etabin_even[etabin_even]->Draw("colz");
-cout << ht_Q2_etabin_even[etabin_even]->Integral() << endl;
+// cout << ht_Q2_etabin_even[etabin_even]->Integral() << endl;
 }
+
+cout << "ht_eta_Q2bin" << endl;
+TCanvas *c_t_eta_Q2bin = new TCanvas("t_eta_Q2bin","t_eta_Q2bin",1600,400);
+c_t_eta_Q2bin->Divide(NQ2bin,1);
+for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
+c_t_eta_Q2bin->cd(Q2bin+1);
+gPad->SetLogz();
+ht_eta_Q2bin[Q2bin]->Draw("colz");
+char title[100];
+sprintf(title,"%.01f < Q2 < %.01f (GeV^{2});t (GeV^{2});#eta ",Q2bin_edge[Q2bin],Q2bin_edge[Q2bin+1]);
+ht_eta_Q2bin[Q2bin]->SetTitle(title);
+cout << ht_eta_Q2bin[Q2bin]->Integral() << endl;
+}
+
+
+  cout << "Q2bin " << endl;
+for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
+for(int etabin=0;etabin<Netabin_Q2bin;etabin++){
+for(int tbin=0;tbin<1;tbin++){  
+  cout << countbin_Q2bin[Q2bin][etabin][tbin] <<  "\t" ;
+}}
+  cout << endl;
+}
+
+TCanvas *c_theta_phi_CM_Q2bin = new TCanvas("theta_phi_CM_Q2bin","theta_phi_CM_Q2bin",1600,400);
+c_theta_phi_CM_Q2bin->Divide(NQ2bin,1);
+for(int Q2bin=0;Q2bin<NQ2bin;Q2bin++){
+c_theta_phi_CM_Q2bin->cd(Q2bin+1);
+gPad->SetLogz();
+htheta_phi_CM_Q2bin[Q2bin]->Draw("colz");
+char title[100];
+sprintf(title,"%.02f < #eta < %.02f;#phi_{CM} (rad);#theta_{CM} (rad})",Q2bin_edge[Q2bin],Q2bin_edge[Q2bin+1]);
+htheta_phi_CM_Q2bin[Q2bin]->SetTitle(title);
+}
+
+
 
 cout << "ht_Q2_sbin" << endl;
 TCanvas *c_t_Q2_sbin = new TCanvas("t_Q2_sbin","t_Q2_sbin",1600,800);
@@ -1122,8 +1247,8 @@ cout << ht_Q2_sbin_even[sbin_even]->Integral() << endl;
 cout << "total events before quasi photon cut " << hs[index-1]->Integral() << endl;
 cout << "total events after quasi photon cut " << hs[index]->Integral() << endl;
 
-outputfile->Write();
-outputfile->Flush();
+// outputfile->Write();
+// outputfile->Flush();
 
 // rootapp->Run();
 
