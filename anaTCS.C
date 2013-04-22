@@ -1247,8 +1247,8 @@ cout << ht_Q2_sbin_even[sbin_even]->Integral() << endl;
 cout << "total events before quasi photon cut " << hs[index-1]->Integral() << endl;
 cout << "total events after quasi photon cut " << hs[index]->Integral() << endl;
 
-// outputfile->Write();
-// outputfile->Flush();
+outputfile->Write();
+outputfile->Flush();
 
 // rootapp->Run();
 
