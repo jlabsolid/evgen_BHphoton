@@ -19,23 +19,27 @@ double Brem_Approx(double, double,double); // argument Eg, Eb, l as target lengt
 
 int main(int argc, char* argv[])
 { 
-  double Eb=11.,Eg_min=4.2,Q2_max=0.05,t_lim=3.2,Ep=0.,l=15;
+  double Eb=11.,Eg_min=4.2,Q2_max=0.05,Q2min=4,Q2max=9,t_lim=3.2,Ep=0.,l=15;
   int Nsim=1e6;
   
-  if (argc != 8 || argv[1]=="-h") {
-    cout << "input: Eb(GeV) Eg_min(GeV) Q2_max(GeV2) t_lim(GeV2) Ep(GeV) l(cm) Nsim" << endl; 
+  if (argc != 10 || argv[1]=="-h") {
+    cout << "input: Eb(GeV) Eg_min(GeV) Q2min(GeV2) Q2max(GeV2) Q2_max(GeV2) t_lim(GeV2) Ep(GeV) l(cm) Nsim" << endl; 
     return 0;    
   }
   else {        
     Eb=atof(argv[1]);
     Eg_min=atof(argv[2]);
-    Q2_max=atof(argv[3]);    
-    t_lim=-atof(argv[4]);
-    Ep=atof(argv[5]);
-    l=atof(argv[6]);    
-    Nsim=int(atof(argv[7]));
+    Q2min=atof(argv[3]); 
+    Q2max=atof(argv[4]);     
+    Q2_max=atof(argv[5]);     
+    t_lim=atof(argv[6]);
+    Ep=atof(argv[7]);
+    l=atof(argv[8]);    
+    Nsim=int(atof(argv[9]));
   }
-  
+
+      t_lim = -t_lim;
+      
 //     const double Ep = 0.;    
 //   const double Eb = 11.;
 // // 2*0.938*(0.938-sqrt(0.938^2+2.5^2))=3.2
@@ -58,9 +62,6 @@ int main(int argc, char* argv[])
   const double Mp = 0.9383;
   const double Me = 0.00051;
 
-  const double Q2max = 9.; //1.05;  
-  const double Q2min = 4.; //1.05;
-  
   TFile *file_out = new TFile("GenTCS.root", "Recreate");
   TObjArray *Hlist = new TObjArray();
   
@@ -145,7 +146,7 @@ int main(int argc, char* argv[])
 	  //double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, 9.) - Q2min;
 // 	  double psf_Q2 = Mpr_max*Mpr_max - Q2min;
 	  double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, Q2max) - Q2min;
-	  if (psf_Q2<=0) {cout << " s or Eg is too small so that max Q2 is below 4" << endl; return 0;}
+	  if (psf_Q2<=0) {cout << " s or Eg is too small so that max Q2 is below Q2min" << endl; return 0;}
 	  Q2 = rand->Uniform(Q2min, Q2min + psf_Q2);
 	  
 	  //Q2 = 1.25; //Just for test
