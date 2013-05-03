@@ -188,8 +188,13 @@ TFile *outputfile=new TFile(output_filename, "recreate");
 
 TH1F *hcrs_BH_log=new TH1F("crs_BH_log","crs_BH_log",24,-12,12);
 
-TH1F *hcrs_t=new TH1F("crs_t","crs_t",5,0.1,1.1);
 TH1F *hcrs_t_stat=new TH1F("crs_t_stat","crs_t_stat",5,0.1,1.1);
+TH1F *hcrs_t=new TH1F("crs_t","crs_t",5,0.1,1.1);
+// TH1F *hcrs_t_paper=new TH1F("crs_t_paper","crs_t_paper",40,0.,0.4);
+// TH1F *hcrs_t_paper_nopsf=new TH1F("crs_t_paper_nopsf","crs_t_paper_nopsf",40,0.,0.4);
+TH1F *hcrs_t_paper=new TH1F("crs_t_paper","crs_t_paper",100,0.,1);
+TH1F *hcrs_t_paper_nopsf=new TH1F("crs_t_paper_nopsf","crs_t_paper_nopsf",100,0.,1);
+
 
 
 TH1F *hEg=new TH1F("Eg","Eg",120,0,12);
@@ -538,11 +543,11 @@ for (Int_t i=0;i<nevent;i++) {
       pr.SetXYZM(prot_px,prot_py,prot_pz,0.938);
       
       double pr_mom=pr.P(),e_mom=e.P(),p_mom=p.P();
-      double Theta(),pr_theta=pr.Theta(),e_theta=e.Theta(),p_theta=p.Theta();
+      double pr_theta=pr.Theta(),e_theta=e.Theta(),p_theta=p.Theta();
       double pr_phi=pr.Phi(),e_phi=e.Phi(),p_phi=p.Phi();    
       
      
-      ///get acc and resolution before smearing
+      ///get acc and resolution before smear
       int res_index_electron=0, res_index_positron=0, res_index_proton=0;
       double acc_electron_largeangle=0,acc_electron_forwardangle=0,acc_positron_largeangle=0,acc_positron_forwardangle=0,acc_proton_largeangle=0,acc_proton_forwardangle=0;
       double acc_proton=0,acc_positron=0,acc_electron=0;      
@@ -685,14 +690,50 @@ for (Int_t i=0;i<nevent;i++) {
       if (y<0) phi_CM=-phi_CM;
 //       cout << " phi_CM " << phi_cm  << " " << phi_CM << endl;
 //       cout << " th_cm " << th_cm << " " << theta_CM << endl;   
+
+      ///================verify inverse derive the kinematics =========
+//       double m=0.000511;
+//       double Pi=3.1415926;
+//       double       Eg=(s/M-M)/2;      
+//       double       prot_E=t/2/M+M;
+//       double       prot_P=sqrt(prot_E*prot_E-M*M);
+//       double       prot_Phi=pr_phi;      
+//       double       tp_E=Eg+M-prot_E;
+//       double       tp_P=sqrt(tp_E*tp_E-Q2);
+//       double       tp_Phi=prot_Phi-Pi*prot_Phi/fabs(prot_Phi);      
+//       double       prot_Theta=acos((Eg*Eg-tp_P*tp_P+prot_P*prot_P)/(2*Eg*prot_P));            
+//       double       tp_Theta=acos((Eg*Eg+tp_P*tp_P-prot_P*prot_P)/(2*Eg*tp_P));      
+//       double       ele_CM_E=sqrt(Q2)/2;
+//       double       ele_CM_P=sqrt(ele_CM_E*ele_CM_E-m*m);
+//       double       ele_CM_Theta=theta_CM;
+//       double       ele_CM_Phi=phi_CM;      
+//       double       pos_CM_E=ele_CM_E;
+//       double       pos_CM_P=ele_CM_P;
+//       double       pos_CM_Theta=Pi-ele_CM_Theta;
+//       double       pos_CM_Phi=ele_CM_Phi-Pi*ele_CM_Phi/fabs(ele_CM_Phi); 
+//       TVector3  ele_CM_v=ele_CM_P*sin(ele_CM_Theta)*cos(ele_CM_Phi)*e1+ele_CM_P*sin(ele_CM_Theta)*sin(ele_CM_Phi)*e2+ele_CM_P*cos(ele_CM_Theta)*e3;
+//       TVector3  pos_CM_v=pos_CM_P*sin(pos_CM_Theta)*cos(pos_CM_Phi)*e1+pos_CM_P*sin(pos_CM_Theta)*sin(pos_CM_Phi)*e2+pos_CM_P*cos(pos_CM_Theta)*e3;
+//       TLorentzVector ele_CM(ele_CM_v,ele_CM_E); 
+//       TLorentzVector pos_CM(pos_CM_v,pos_CM_E);
+//       TLorentzVector tp(tp_P*sin(tp_Theta)*cos(tp_Phi),tp_P*sin(tp_Theta)*sin(tp_Phi),tp_P*cos(tp_Theta),tp_E);      
+//       TLorentzVector ele=ele_CM,pos=pos_CM;
+//       ele.Boost(tp.BoostVector());
+//       pos.Boost(tp.BoostVector());           
+//       double       ele_E=ele.E();
+//       double       ele_P=ele.P();
+//       double       ele_Theta=ele.Theta();
+//       double       ele_Phi=ele.Phi();
+//       double       pos_E=pos.E();
+//       double       pos_P=pos.P();
+//       double       pos_Theta=pos.Theta();
+//       double       pos_Phi=pos.Phi();
+
+//       cout << pr_mom << " " <<  pr_theta << " " <<  pr_phi << "\t " << ep.P() << " " <<  ep.Theta() << " " <<  ep.Phi() << "\t " << e_mom<< " " << e_theta<< " " << e_phi<< "\t " << p_mom<< " " << p_theta<< " " << p_phi << endl;    
+//       cout << prot_P << " " <<  prot_Theta << " " <<  prot_Phi << "\t " << tp_P << " " <<  tp_Theta << " " <<  tp_Phi  << "\t " <<  ele_P << " " <<  ele_Theta << " " <<  ele_Phi  << "\t " << pos_P << " " <<  pos_Theta << " " <<  pos_Phi << endl;
+      ///====================================================================
       
-//       cout << e_CM.Vect().Angle(p_CM.Vect()) << endl; 
-//       double theta_CM=e_CM.Vect().Angle(-pr_CM.Vect());
-//       TVector3 plane_decay=(e.Vect().Cross(p.Vect())).Unit();
-//       TVector3 plane_scatter=(ph.Vect().Cross(pr.Vect())).Unit();
-//       double phi_CM=plane_decay.Angle(plane_scatter);
-//       cout << theta_CM <<  " " << phi_CM << endl;
-        
+      
+      
       hEg->Fill(ph_mom);
       hflux_factor->Fill(flux_factor);
       hEgflux_factor->Fill(ph_mom,flux_factor);
@@ -751,14 +792,20 @@ for (Int_t i=0;i<nevent;i++) {
 	  }
 	}
 	
+      }
+      
 	if (17.5 < s && s < 19.5){
 	  if (6 < Q2 && Q2 < 7){
-	    hcrs_t->Fill(t,weight[4]);
-	    hcrs_t_stat->Fill(t,weight[4]);    
+	    hcrs_t_stat->Fill(t,crs_BH*psf*psf_flux*flux_factor/nevent*acc*acc_cut);
+	    hcrs_t->Fill(t,crs_BH*psf*psf_flux*flux_factor/nevent/0.2);
 	  }
 	}
 	
-      }    	
+	if ((24 < s && s < 26) && (4.5 < Q2 && Q2 < 5.5) && (3.1416/4 < theta_CM && theta_CM < 3*3.1416/4)){
+// 	if ((0 < s && s < 30) && (6.4 < Q2 && Q2 < 6.6) && (3.1416/4. < theta_CM && theta_CM < 3.*3.1416/4.)){  
+	    hcrs_t_paper->Fill(t,crs_BH*psf/nevent/0.01/0.2);
+	    hcrs_t_paper_nopsf->Fill(t,crs_BH/nevent/0.01/0.2);
+	}
   
 	
 	hs_final->Fill(s,weight[index]);	
@@ -1051,10 +1098,12 @@ hcrs_BH_log->Draw();
 
 cout << "crs_t error" << endl;
 for(int k=1;k<6;k++){
-double err_rel=1./sqrt(hcrs_t->GetBinContent(k)/50.);
-double crs = hcrs_t->GetBinContent(k)/(50*3600*24*1e-36*1e37*0.85);
-double err=crs*err_rel;
-cout << hcrs_t->GetBinContent(k)/50. << " " << err_rel << " " << err << " " << crs << endl;
+// double err_rel=1./sqrt(hcrs_t->GetBinContent(k)/50.);
+// double crs = hcrs_t->GetBinContent(k)/(50*3600*24*1e-36*1e37*0.85)/0.2;
+double crs = hcrs_t->GetBinContent(k);
+double err_rel=1./sqrt(hcrs_t_stat->GetBinContent(k)*1e-36*1e35*100*3600*24*0.85);
+double err = crs*err_rel;
+cout << hcrs_t->GetBinContent(k) << " " << err_rel << " " << err << " " << crs << endl;
 hcrs_t->SetBinContent(k,crs);
 hcrs_t->SetBinError(k,err);
 }
@@ -1062,7 +1111,20 @@ TCanvas *c_crs_t = new TCanvas("crs_t","crs_t",600,600);
 // gPad->SetLogy(0);
 hcrs_t->SetMarkerStyle(24);
 hcrs_t->SetMarkerColor(kBlack);
+hcrs_t->SetTitle(";t(GeV2);d#sigma/dt (pb/GeV2)");
 hcrs_t->Draw("E");
+
+TCanvas *c_crs_t_paper = new TCanvas("crs_t_paper","crs_t_paper",600,600);
+// gPad->SetLogy();
+hcrs_t_paper->SetMarkerStyle(24);
+hcrs_t_paper->SetMarkerColor(kBlack);
+hcrs_t_paper->SetTitle(";t(GeV2);d#sigma/dt/dQ'2 (pb/GeV4)");
+hcrs_t_paper->Draw("E");
+hcrs_t_paper_nopsf->SetMarkerStyle(24);
+hcrs_t_paper_nopsf->SetMarkerColor(kRed);
+hcrs_t_paper_nopsf->SetTitle(";t(GeV2);d#sigma/dt/dQ'2 (pb/GeV4)");
+// hcrs_t_paper_nopsf->Draw("E same");
+
 
 TCanvas *c_Miss_2D = new TCanvas("Miss_2D","Miss_2D",1300,600);
 c_Miss_2D->Divide(3,2);
