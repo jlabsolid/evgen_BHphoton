@@ -19,7 +19,7 @@ double Brem_Approx(double, double,double); // argument Eg, Eb, l as target lengt
 
 int main(int argc, char* argv[])
 { 
-  double Eb=11.,Eg_min=4.2,Q2_max=0.05,Q2min=4,Q2max=9,t_lim=3.2,Ep=0.,l=15;
+  double Eb=11.,Eg_min=4.2,Q2min=4,Q2max=9,Q2_max=0.05,t_lim=3.2,Ep=0.,l=15;
   int Nsim=1e6;
   
   if (argc != 10 || argv[1]=="-h") {
