@@ -42,6 +42,7 @@ double TTCS_crs::BH_crs_section( double *x, double *par)
   double cos_TH_Cm = (2*s*(t - 2*M_p*M_p) + (s + M_p*M_p)*(s + M_p*M_p - Q2))/sqrt(Lambda(s, M_p*M_p, 0)*Lambda(s, M_p*M_p, Q2));
   double sin_TH_Cm = sqrt( 1 - cos_TH_Cm*cos_TH_Cm );
   double Delta_Perp = sin_TH_Cm*r/(2*sqrt(s));
+  //iDelta_Perp = Delta_Perp;
   //double Delta_Perp = sqrt((-t)*(1 - tau) - tau*tau*M_p*M_p );
   double a = beta*r*cos(theta);
  
@@ -73,6 +74,11 @@ double TTCS_crs::BH_crs_section( double *x, double *par)
 
   return crs;
 }
+
+// double TTCS_crs::Get_Delta_Perp() const
+// {
+//   return this->iDelta_Perp;
+// }
 
 double TTCS_crs::Eval_BH(double a_phi, double a_th) const
 {

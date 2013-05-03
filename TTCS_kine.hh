@@ -4,7 +4,7 @@
 #include <TVector3.h>
 #include <TLorentzVector.h>
 
-class TTCS_kine
+class TTCS_kine : public TObject
 {
 public:
   TTCS_kine(double m = 0.938, double E = 5.76);

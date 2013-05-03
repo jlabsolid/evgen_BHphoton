@@ -11,6 +11,7 @@ public:
   TTCS_crs(double, double, double); // s(GeV)^2, Q2(GeV)^2, t(GeV)^2
   double Eval_BH(double, double) const;// phi and theta in radians
   double Eval_BH(double, double, double, double, double, double) const; // s, Q2, t
+  //double Get_Delta_Perp() const;
   void Set_SQ2t(double, double, double);
   double Integral_BH_phi_th( double phi_min = 0, double phi_max = 360, double th_min = 0, double th_max = 180);
   void Set_Weight( double weight = -1.); // with +1 it will weight with L/L0, otherwise it will not
@@ -19,7 +20,8 @@ public:
 private:
   double is, iQ2, it;
   double iweight;
-
+  
+  //static double iDelta_Perp; // This 'static' is not a good idea, but it didn't work without this...
 
   static const double radian = 57.2957795130823229;
   static const double m_e = 0.00051;
