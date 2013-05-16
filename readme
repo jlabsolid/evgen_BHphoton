@@ -38,7 +38,7 @@ change SoLID to CLAS12 or EIC for other
 root file with acceptance histogram is needed for anaTCS.C to work
 download
 acceptance_solid_CLEO_JPsi_negative_target300_output.root
-clas12_acceptance_pipele_largebin.root
+clas12_acceptance.root
 from
 http://hallaweb.jlab.org/12GeV/SoLID/download/sim/acceptance/
 
