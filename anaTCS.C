@@ -508,12 +508,19 @@ Int_t nselected = 0;
 cout << "nevent " << nevent << endl;
 
   Double_t cov= 1e-12 * 1e-24; //pb to cm2 coversion
-  Double_t lumi = 1.2e37;  // 1.2e37/cm2/s is from 3nA on 15cm long LH2 target
   Double_t br = 1.;
-  Double_t time = 50*3600*24;  //50 days in seconds
   Double_t eff = 0.85;
+  Double_t lumi, time;
+if (detector=="SoLID"){
+  lumi = 1.2e37;  // 1.2e37/cm2/s is from 3nA on 15cm long LH2 target
+  time = 50*3600*24;  //50 days in seconds
+}
+else if (detector=="CLAS12"){
+  lumi = 1e35;  // 1e35/cm2/s for CLAS12
+  time = 130*3600*24;  //130 days in seconds
+}
   Double_t overall_NOpsf = cov *lumi * br * eff * time /nevent;
-
+  
   Int_t counter;
   Int_t countd = 1;
   cout << "|___________________|" << endl;
