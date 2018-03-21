@@ -14,47 +14,47 @@
 
 using namespace std;
 
-double N_EPA(double, double, double); // 1st argument is Eg, the secon one is Q2_max (0.02)
+double N_EPA(double, double, double); // 1st argument is Eg, the secon one is Q2max (0.02)
 double Brem_Approx(double, double,double); // argument Eg, Eb, l as target length
 
 int main(int argc, char* argv[])
 { 
-  double Eb=11.,Eg_min=4.2,Q2min=4,Q2max=9,Q2_max=0.05,t_lim=3.2,Ep=0.,l=15;
-  int Nsim=1e6;
+  double Eb=11.,Eg_min=4.2,Qp2min=4,Qp2max=9,Q2max=0.05,tlim=3.2,Ep=0.,l=15;
+  int Nevent=1e6;
   
   if (argc != 10 || argv[1]=="-h") {
-    cout << "input: Eb(GeV) Eg_min(GeV) Q2min(GeV2) Q2max(GeV2) Q2_max(GeV2) t_lim(GeV2) Ep(GeV) l(cm) Nsim" << endl; 
+    cout << "input: Eb(GeV) Egmin(GeV) Q'2min(GeV2) Q'2max(GeV2) Q2max(GeV2) tlim(GeV2) Ep(GeV) l(cm) Nevent" << endl; 
     return 0;    
   }
   else {        
     Eb=atof(argv[1]);
     Eg_min=atof(argv[2]);
-    Q2min=atof(argv[3]); 
-    Q2max=atof(argv[4]);     
-    Q2_max=atof(argv[5]);     
-    t_lim=atof(argv[6]);
+    Qp2min=atof(argv[3]); 
+    Qp2max=atof(argv[4]);     
+    Q2max=atof(argv[5]);     
+    tlim=atof(argv[6]);
     Ep=atof(argv[7]);
     l=atof(argv[8]);    
-    Nsim=int(atof(argv[9]));
+    Nevent=int(atof(argv[9]));
   }
 
-      t_lim = -t_lim;
+      tlim = -tlim;
       
 //     const double Ep = 0.;    
 //   const double Eb = 11.;
 // // 2*0.938*(0.938-sqrt(0.938^2+2.5^2))=3.2
-//   const double t_lim = -3.2; // limit of t distribution
+//   const double tlim = -3.2; // limit of t distribution
 // //2*0.938*(0.938-sqrt(0.938^2+4.6^2))=7
-// //   const double t_lim = -7.0; // limit of t distribution  
+// //   const double tlim = -7.0; // limit of t distribution  
 //  const double Eg_min = 6; //Gev
   
 //   const double Ep = 60.;    
 // //   const double Eb = 6.;
 //   const double Eb = 11.;  
-//   const double t_lim = -200; // limit of t distribution
+//   const double tlim = -200; // limit of t distribution
 //   const double Eg_min = 0.01;
 
-//     const int Nsim = 100000;
+//     const int Nevent = 100000;
     
   const double PI = 3.14159265358979312;
   const double radian = 57.2957795130823229;
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
   const double Mp = 0.9383;
   const double Me = 0.00051;
 
-  TFile *file_out = new TFile("GenTCS.root", "Recreate");
+  TFile *file_out = new TFile(Form("GenTCS_Eb%s_Egmin%s_Qp2min%s_Qp2max%s_Q2max%s_tlim%s_Ep%s_l%s_%s.root",argv[1],argv[2],argv[3],argv[4],argv[5],argv[6],argv[7],argv[8],argv[9]), "Recreate");
   TObjArray *Hlist = new TObjArray();
   
   TLorentzVector L_em, L_ep, L_prot;
@@ -115,17 +115,17 @@ int main(int argc, char* argv[])
 
   TGenPhaseSpace event;
 
-  for( int i = 0; i < Nsim; i++ )
+  for( int i = 0; i < Nevent; i++ )
     {
       if( i%50000 == 0 ){ cout<<"Processed "<<i<<" events"<<endl; }
       
       double Eg = rand->Uniform(Eg_min, Eb);
       
       if (Ep==0) {
-	flux_factor = N_EPA(Eg, Q2_max, Eb)+Brem_Approx(Eg,Eb,l);
+	flux_factor = N_EPA(Eg, Q2max, Eb)+Brem_Approx(Eg,Eb,l);
       }
       else {
-      	flux_factor = N_EPA(Eg, Q2_max, Eb);
+      	flux_factor = N_EPA(Eg, Q2max, Eb);
       }
       
       psf_flux = Eb - Eg_min;
@@ -140,26 +140,26 @@ int main(int argc, char* argv[])
 
       double t_min = -1000.;
 
-      while( t_min < t_lim )
+      while( t_min < tlim )
 	{
-	  //double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, 4.) - Q2min;
-	  //double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, 9.) - Q2min;
-// 	  double psf_Q2 = Mpr_max*Mpr_max - Q2min;
-	  double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, Q2max) - Q2min;
-	  if (psf_Q2<=0) {cout << " s or Eg is too small so that max Q2 is below Q2min" << endl; return 0;}
-	  Q2 = rand->Uniform(Q2min, Q2min + psf_Q2);
+	  //double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, 4.) - Qp2min;
+	  //double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, 9.) - Qp2min;
+// 	  double psf_Q2 = Mpr_max*Mpr_max - Qp2min;
+	  double psf_Q2 = TMath::Min(Mpr_max*Mpr_max, Qp2max) - Qp2min;
+	  if (psf_Q2<=0) {cout << " s or Eg is too small so that max Q2 is below Q'2min" << endl; return 0;}
+	  Q2 = rand->Uniform(Qp2min, Qp2min + psf_Q2);
 	  
 	  //Q2 = 1.25; //Just for test
-	  //double Q2 = rand->Uniform(Q2min, Mpr_max*Mpr_max);
+	  //double Q2 = rand->Uniform(Qp2min, Mpr_max*Mpr_max);
 	  //cout<<"Q2 = "<<Q2<<endl;
 	  
 	  t_min = T_min(0., Mp, sqrt(Q2), Mp, W2);
 	  double t_max = T_max(0., Mp, sqrt(Q2), Mp, W2);
 	  double psf_tM;
 	  
-	  if(t_min > t_lim)
+	  if(t_min > tlim)
 	    {
-	      psf_tM = t_min - TMath::Max(t_max, t_lim);
+	      psf_tM = t_min - TMath::Max(t_max, tlim);
 	      t = rand->Uniform(t_min - psf_tM, t_min);
 	      
 	      //t = -0.25;
@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
   file_out->Close();
 }
 
-double N_EPA(double Eg, double Q2_max, double Eb)
+double N_EPA(double Eg, double Q2max, double Eb)
 {
   const double alpha = 1./137.;
   const double PI = 3.14159265358979312;
@@ -253,7 +253,7 @@ double N_EPA(double Eg, double Q2_max, double Eb)
   double me = 0.00051;
   double Mp = 0.9383;
   double Q2_min = me*me*x*x/(1 - x);
-  return (1/Eb)*alpha/(PI*x)*( (1 - x + x*x/2)*log(Q2_max/Q2_min) - (1 - x));
+  return (1/Eb)*alpha/(PI*x)*( (1 - x + x*x/2)*log(Q2max/Q2_min) - (1 - x));
 }
 
 double Brem_Approx(double Eg, double Eb,double l)
