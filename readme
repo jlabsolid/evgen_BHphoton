@@ -16,13 +16,17 @@ main generator code is GenTCS.cc which calls other code as lib
 To compile
 setup root env
 make
+
+to run 
+setup root env
 setenv LD_LIBRARY_PATH ./:${LD_LIBRARY_PATH}
-./GenTCS.exe Eb(GeV) Eg_min(GeV) Q2_max(GeV2) t_lim(GeV2) Ep(GeV) l(cm) Nsim
+./GenTCS.exe Eb(GeV) Eg_min(GeV) Q'2min(GeV2) Q'2max(GeV2) Q2max(GeV2) tmin(GeV2) Ep(GeV) l(cm) Nsim
 
-typical SoLID choice 
-double Eb=11.,Eg_min=4.2,Q2_max=0.05,t_lim=3.2,Ep=0.,l=15;
+typical SoLID choice
+double Eb=11.,Eg_min=4.2,Q'2min=4,Q'2max=9,Q2max=0.05,tmin=3.2,Ep=0.,l=15;
+./GenTCS.exe 11 4.2 4 9 0.05 3.2 0. 15 1e6
 
-Q'2 (InvM^2 of decayleptopn pair) is set in code as 4 to 9
+GenTCS_Eb11_Egmin4.2_Qp2min4_Qp2max9_Q2max0.05_tmin3.2_Ep0_l15_1e6.root
 
 choose Ep=0 and l=non-0 for fixed target (jlab 12GeV)
 choose Ep=non-0 and l=0 for collider (EIC)
@@ -32,8 +36,10 @@ The output tree is in GenTCS.root
 anaTCS.C can be used to analyze the output tree
 It's too slow to run as script, better run as binary
 in root
-.x anaTCS.C+("GenTCS.root","SoLID")
-change SoLID to CLAS12 or EIC for other 
+.x anaTCS.C+("GenTCS.root","SoLID",true)
+choose the root file by GenTCS
+choose SoLID or CLAS12 detector
+use "true" or "false" to turn off momentum smearing
 
 root file with acceptance histogram is needed for anaTCS.C to work
 download
